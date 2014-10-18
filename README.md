@@ -1,0 +1,4 @@
+Pastry
+======
+
+Implemented Pastry algorithm
