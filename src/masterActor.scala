@@ -14,24 +14,26 @@ class masterActor(numNodes: Int, numReq: Int, mySys: ActorSystem) extends Actor 
 
   def receive = {
     //each node joins one by one
-    /*case "init" =>
+    case "init" =>
       if (i <= numNodes) {
         //create nodes
         var nodeid: String = getRandomID(i)
         var peer = mySys.actorOf(Props(new pastryActor(nodeid, numReq)), name = i.toString)
-        peerList = peerList:+ peer
+        peerList = peerList :+ peer
         i += 1
         //add nodes
         peer ! "join"
+      } else {
+        for (peer <- peerList) {
+          peer ! "startRouting"
+        }
       }
-      else {
-        println("coming here")
-        for(peer<-peerList){
-    		peer ! "startRouting"
-       }*/
+
+    case "joined" =>
+      self ! "init"
 
     //all node join together
-    case "init" =>
+    /*case "init" =>
       for (i <- 1 to numNodes) {
         //create nodes
         var nodeid: String = getRandomID(i)
@@ -49,11 +51,8 @@ class masterActor(numNodes: Int, numReq: Int, mySys: ActorSystem) extends Actor 
         for (peer <- peerList) {
           peer ! "startRouting"
         }
-      }
+      }*/
 
-    case "joined" =>
-      self ! "init"
-      
     case _ => println("Entering default case of masterActor")
 
   } //receive method ends here
