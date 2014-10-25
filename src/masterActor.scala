@@ -9,8 +9,8 @@ case class Joined(nodeId: String)
 
 class masterActor(numNodes: Int, numReq: Int, mySys: ActorSystem) extends Actor {
 
-  var b: Int = 3;
-  var l: Int = 8;
+  var b: Int = 2;
+  var l: Int = 4;
   var lenUUID: Int = 1 << b //length of random string can be increased to support more actors
   var logBaseB = (Math.log(numNodes) / Math.log(lenUUID)).toInt
   //println("lenUUID::" + lenUUID + "log::" + logBaseB)
@@ -41,15 +41,25 @@ class masterActor(numNodes: Int, numReq: Int, mySys: ActorSystem) extends Actor 
         i += 1
         //add nodes
         peer ! JoinNetwork(peerList((Math.random * (peerList.length - 1)).toInt))
-      } else {
+      } /*else {
+        println("********************************************Come Here Only Once*************************************************************")
         for (peer <- peerList) {
           var msg: String = "hello"
           peer ! startRouting(msg)
         }
-      }
+      }*/
     
     case Joined(nodeId: String) =>
-      self ! "init"
+      count+=1
+      if(count == numNodes) {
+        Thread.sleep(1000)
+        for (peer <- peerList) {
+          var msg: String = "hello"
+          peer ! startRouting(msg)
+        }
+      } else {
+        self ! "init"
+      }
      
     case _ => println("Entering default case of masterActor")
   
